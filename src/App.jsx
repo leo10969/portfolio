@@ -15,7 +15,7 @@ function App() {
       <h1>佐藤 玲生- Sato Reo</h1>
       <div className="container">
         <div className="left-contents">
-          <img src="/img/profile_image_250.png" alt="" />
+          <img src={new URL('./../public/img/profile_image_250.png', import.meta.url).pathname} alt="" />
 
           <dl>
             <dt>所属</dt>
@@ -69,7 +69,7 @@ function App() {
                 スマートフォンを用いたAR環境における片手用空中キーボードの性能調査<br/>
                 筑波大学 情報学群 情報科学類，2024年2月，44 pages．
                 <a href="https://www.iplab.cs.tsukuba.ac.jp/paper/bachelor/reosato_bachelor_thesis.pdf">
-                  <img className="pdf_icon" src="/img/PDF_icon.svg" />
+                  <img className="pdf_icon" src={new URL('./../public/img/PDF_icon.svg', import.meta.url).pathname} />
                   PDF
                 </a>
               </li>
@@ -83,7 +83,7 @@ function App() {
                 第31回インタラクティブシステムとソフトウェアに関するワークショップ（WISS2023），<br/>
                 日本ソフトウェア科学会，2023年11月，3 pages．
                 <a href="https://www.wiss.org/WISS2023Proceedings/data/1-B08.pdf">
-                  <img className="pdf_icon" src="/img/PDF_icon.svg" />
+                  <img className="pdf_icon" src={new URL('./../public/img/PDF_icon.svg', import.meta.url).pathname} />
                   PDF
                 </a>
               </li>
@@ -93,7 +93,7 @@ function App() {
                 第206回ヒューマンコンピュータインタラクション研究会（HCI206），<br/>
                 情報処理学会，2024年1月，8 pages．
                 <a href="https://ipsj.ixsq.nii.ac.jp/ej/?action=repository_uri&item_id=231605&file_id=1&file_no=1">
-                  <img className="pdf_icon" src="/img/PDF_icon.svg" />
+                  <img className="pdf_icon" src={new URL('./../public/img/PDF_icon.svg', import.meta.url).pathname} />
                   PDF
                 </a>
               </li>
