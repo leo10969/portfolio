@@ -14,8 +14,8 @@ function Hero() {
   return (
     <div className="hero">
       <div className="hero-inner">
-        <h1 className="hero-title">Reo Sato</h1>
-        <p className="hero-sub">HCI / XR / Handheld AR /</p>
+        <h1 className="hero-title">佐藤玲生 Reo Sato</h1>
+        <p className="hero-sub">HCI</p>
         {/* <div className="hero-cta">
           <a href="#paper-info" className="btn">文献を見る</a>
           <a href="#activities" className="btn ghost">活動を見る</a>
@@ -32,6 +32,8 @@ function ProfilePhoto() {
         className="profile-photo"
         src={`${import.meta.env.BASE_URL}img/profile_image.jpg`}
         alt="佐藤玲生のプロフィール写真"
+        loading="lazy"
+        decoding="async"
         onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = `${import.meta.env.BASE_URL}img/profile_image_250.png` }}
       />
     </div>
@@ -43,7 +45,7 @@ function ProfileSection() {
     <Section id="profile" title="プロフィール">
       <div className="profile">
         <div className="profile-info full">
-          <dl>
+          <dl className="profile-affiliation">
             <dt>所属</dt>
             <dd>
               <a href="https://www.cs.tsukuba.ac.jp/">筑波大学大学院 理工情報生命学術院 システム情報工学研究群 情報理工学位プログラム </a>
@@ -52,15 +54,24 @@ function ProfileSection() {
               <a href="https://www.iplab.cs.tsukuba.ac.jp/">IPLAB WAVEチーム (志築文太郎 教授 指導)</a>
             </dd>
           </dl>
-          <dl>
+          <dl className="profile-interests">
             <dt>研究の興味</dt>
-            <dd>XR, ハンドヘルドデバイス（スレートデバイス）, Back-of-user interaction, Eye-Gaze interface</dd>
+            <dd className="interests">
+              {[
+                'XR',
+                'ハンドヘルドデバイス（スレートデバイス）',
+                'Back-of-user interaction',
+                'Eye-Gaze interface',
+              ].map((t, i) => (
+                <span key={i} className="badge">{t}</span>
+              ))}
+            </dd>
           </dl>
-          <dl>
+          <dl className="profile-contact">
             <dt>連絡先</dt>
             <dd>rsato[at]iplab.cs.tsukuba.ac.jp</dd>
           </dl>
-          <dl>
+          <dl className="profile-history">
             <dt>略歴</dt>
             <dd><span className="history-year">2017年(平成29年)</span><br/> 大分高等学校 入学</dd>
             <dd><span className="history-year">2020年(令和2年)</span><br/> 大分高等学校 卒業</dd>
@@ -163,7 +174,7 @@ function ActivitiesSection() {
       key: 'other',
       title: 'その他',
       items: [
-        'TOEIC Listening & Reading Test 835点',
+        'TOEIC Listening & Reading Test 835点 2023年3月26日',
       ],
     },
   ]
@@ -183,6 +194,28 @@ function ActivitiesSection() {
     { start: '2021-11-01', label: '2021-11–2022-11', badge: '学内活動', text: '筑波大学スポーツ・デー学生委員会副委員長' },
   ].sort((a, b) => a.start.localeCompare(b.start))
   const [mode, setMode] = useState('timeline')
+  const [touchStart, setTouchStart] = useState(null)
+  const handleTouchStart = (e) => {
+    e.stopPropagation()
+    const t = e.touches && e.touches[0]
+    if (!t) return
+    setTouchStart({ x: t.clientX, y: t.clientY })
+  }
+  const handleTouchEnd = (e) => {
+    e.stopPropagation()
+    if (!touchStart) return
+    const t = e.changedTouches && e.changedTouches[0]
+    if (!t) { setTouchStart(null); return }
+    const dx = t.clientX - touchStart.x
+    const dy = t.clientY - touchStart.y
+    const absDx = Math.abs(dx)
+    const absDy = Math.abs(dy)
+    if (absDx > 48 && absDx > absDy * 1.2) {
+      if (dx < 0 && mode === 'timeline') setMode('category')
+      else if (dx > 0 && mode === 'category') setMode('timeline')
+    }
+    setTouchStart(null)
+  }
   return (
     <Section id="activities" title="活動">
       <div className="view-switch">
@@ -190,18 +223,26 @@ function ActivitiesSection() {
         <button className={`seg${mode === 'category' ? ' active' : ''}`} onClick={() => setMode('category')} type="button">カテゴリー</button>
       </div>
       {mode === 'timeline' ? (
-        <ActivityTimeline items={timelineItems} />
+        <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+          <ActivityTimeline items={timelineItems} />
+        </div>
       ) : (
-        <div className="activity-grid">
+        <div className="activity-grid" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           {groups.map(g => (
             <article key={g.key} className="activity-card">
               <div className="activity-head">
                 <span className="tag">{g.title}</span>
               </div>
-              <ul>
-                {g.items.map((t, i) => (
-                  <li key={i}>{t}</li>
-                ))}
+              <ul className="activity-list">
+                {g.items.map((t, i) => {
+                  const { dateLabel, text } = parseActivityItem(t)
+                  return (
+                    <li key={i} className="activity-item">
+                      <span className="activity-item-date">{dateLabel}</span>
+                      <span className="activity-item-text">{text}</span>
+                    </li>
+                  )
+                })}
               </ul>
             </article>
           ))}
@@ -212,22 +253,88 @@ function ActivitiesSection() {
 }
 
 function ActivityTimeline({ items }) {
+  // 年ごとに見出しを差し込む
+  const nodes = []
+  let prevYear = null
+  items.forEach((it, idx) => {
+    const year = String(it.start || '').slice(0, 4)
+    if (year && year !== prevYear) {
+      nodes.push({ type: 'year', year, key: `y-${year}-${idx}` })
+      prevYear = year
+    }
+    nodes.push({ type: 'item', it, key: `i-${idx}` })
+  })
+
   return (
     <div className="timeline">
-      {items.map((it, idx) => (
-        <div key={idx} className="tl-item">
-          <div className="tl-dot" />
-          <div className="tl-content">
-            <div className="tl-meta">
-              <span className="tl-date">{formatTimelineDate(it.label)}</span>
-              <span className="tl-badge">{it.badge}</span>
+      {nodes.map(node => (
+        node.type === 'year' ? (
+          <div key={node.key} className="tl-year"><span>{node.year}</span></div>
+        ) : (
+          <div key={node.key} className="tl-item">
+            <div className="tl-dot" />
+            <div className="tl-content">
+              <div className="tl-meta">
+                <span className="tl-date">{formatTimelineDate(node.it.label)}</span>
+                <span className="tl-badge">{node.it.badge}</span>
+              </div>
+              <div className="tl-text">{node.it.text}</div>
             </div>
-            <div className="tl-text">{it.text}</div>
           </div>
-        </div>
+        )
       ))}
     </div>
   )
+}
+
+function parseActivityItem(raw) {
+  const text = String(raw)
+  const clean = (s) => s.replace(/[\u3002\.]+$/u, '').replace(/[()（）]/g, '').trim()
+  const pad = (n) => String(n).padStart(2, '0')
+
+  // 1) YYYY年M月-YYYY年M月
+  let m = text.match(/(20\d{2})年\s*(\d{1,2})月\s*[–\-]\s*(20\d{2})年\s*(\d{1,2})月/)
+  if (m) {
+    const label = `${m[1]}/${pad(m[2])}–${m[3]}/${pad(m[4])}`
+    return { dateLabel: label, text: clean(text.replace(m[0], '')) }
+  }
+  // 2) YYYY年M月-M月 (同一年範囲)
+  m = text.match(/(20\d{2})年\s*(\d{1,2})月\s*[–\-]\s*(\d{1,2})月/)
+  if (m) {
+    const label = `${m[1]}/${pad(m[2])}–${m[1]}/${pad(m[3])}`
+    return { dateLabel: label, text: clean(text.replace(m[0], '')) }
+  }
+  // 3) YYYY年M月D日 (日まで)
+  m = text.match(/(20\d{2})年\s*(\d{1,2})月\s*(\d{1,2})日/)
+  if (m) {
+    const label = `${m[1]}/${pad(m[2])}/${pad(m[3])}`
+    return { dateLabel: label, text: clean(text.replace(m[0], '')) }
+  }
+  // 4) YYYY年M月
+  m = text.match(/(20\d{2})年\s*(\d{1,2})月/)
+  if (m) {
+    const label = `${m[1]}/${pad(m[2])}`
+    return { dateLabel: label, text: clean(text.replace(m[0], '')) }
+  }
+  // 5) YYYY/MM(/DD)?
+  m = text.match(/(20\d{2})\/(\d{1,2})(?:\/(\d{1,2}))?/)
+  if (m) {
+    const label = m[3] ? `${m[1]}/${pad(m[2])}/${pad(m[3])}` : `${m[1]}/${pad(m[2])}`
+    return { dateLabel: label, text: clean(text.replace(m[0], '')) }
+  }
+  // 6) YYYY-MM(-DD)?
+  m = text.match(/(20\d{2})-(\d{1,2})(?:-(\d{1,2}))?/)
+  if (m) {
+    const label = m[3] ? `${m[1]}/${pad(m[2])}/${pad(m[3])}` : `${m[1]}/${pad(m[2])}`
+    return { dateLabel: label, text: clean(text.replace(m[0], '')) }
+  }
+  // 7) 年のみ
+  m = text.match(/(20\d{2})年/)
+  if (m) {
+    const label = `${m[1]}`
+    return { dateLabel: label, text: clean(text.replace(m[0], '')) }
+  }
+  return { dateLabel: '—', text: clean(text) }
 }
 
 function formatTimelineDate(label) {
@@ -274,14 +381,14 @@ function PublicationsSection() {
   return (
     <Section id="paper-info" title="文献情報">
       <div className="filters">
-        <input
+        {/* <input
           className="search"
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="キーワード検索（題名・著者・会議名）"
           aria-label="文献検索"
-        />
+        /> */}
         <div className="chips">
           {categories.map(cat => (
             <button
@@ -399,13 +506,38 @@ const publications = [
 
 function App() {
   const [activeTab, setActiveTab] = useState('pubs')
+  const tabsOrder = ['pubs', 'activities']
+  const [touchStart, setTouchStart] = useState(null)
+  const handleTouchStart = (e) => {
+    const t = e.touches && e.touches[0]
+    if (!t) return
+    setTouchStart({ x: t.clientX, y: t.clientY })
+  }
+  const handleTouchEnd = (e) => {
+    if (!touchStart) return
+    const t = e.changedTouches && e.changedTouches[0]
+    if (!t) { setTouchStart(null); return }
+    const dx = t.clientX - touchStart.x
+    const dy = t.clientY - touchStart.y
+    const absDx = Math.abs(dx)
+    const absDy = Math.abs(dy)
+    if (absDx > 48 && absDx > absDy * 1.2) {
+      const idx = tabsOrder.indexOf(activeTab)
+      if (dx < 0 && idx < tabsOrder.length - 1) {
+        setActiveTab(tabsOrder[idx + 1])
+      } else if (dx > 0 && idx > 0) {
+        setActiveTab(tabsOrder[idx - 1])
+      }
+    }
+    setTouchStart(null)
+  }
   return (
     <div className="contents-wrapper">
       <Hero />
       <ProfilePhoto />
       <div className="single-column">
         <ProfileSection />
-        <div className="right-contents">
+        <div className="right-contents" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <TabNav
             tabs={[
               { key: 'pubs', label: '文献' },
