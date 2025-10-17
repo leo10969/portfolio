@@ -1,16 +1,27 @@
-# React + Vite
+# Portfolio (Vite + React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GitHub Pages で公開する設定が入っています。リポジトリ名は `portfolio`（ユーザー `leo10969`）。
 
-Currently, two official plugins are available:
+## 開発
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm i
+npm run dev
+```
 
-## React Compiler
+Node は 20.19+ を推奨（Vite 7 の要件）。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ビルド
 
-## Expanding the ESLint configuration
+```bash
+npm run build
+npm run preview
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## デプロイ（GitHub Pages）
+
+- `vite.config.js` の `base` は `/portfolio/` に設定済み
+- GitHub Actions ワークフロー `.github/workflows/deploy.yml` で `dist/` を自動公開
+- リポジトリ Settings → Pages → Source: `GitHub Actions` を選択してください
+
+公開 URL（想定）: `https://leo10969.github.io/portfolio/`
