@@ -25,6 +25,19 @@ function Hero() {
   )
 }
 
+function TopNotice() {
+  return (
+    <div className="notice">
+      <div className="notice-head">
+        <span className="notice-icon" aria-hidden="true">🚧</span>
+        <span className="notice-badge">お知らせ</span>
+      </div>
+      <p className="notice-title">Cursorエディタによって開発中</p>
+      <p className="notice-text">ページの見た目以上に内容を充実させていきたいです．．．</p>
+    </div>
+  )
+}
+
 function ProfilePhoto() {
   return (
     <div className="profile-photo-wrapper">
@@ -533,6 +546,7 @@ function App() {
   }
   return (
     <div className="contents-wrapper">
+      <TopNotice />
       <Hero />
       <ProfilePhoto />
       <div className="single-column">

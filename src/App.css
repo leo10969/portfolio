@@ -55,6 +55,41 @@ a:hover {
 .hero-cta { display: flex; gap: 10px; justify-content: center; }
 .btn.ghost { background: transparent; border-color: var(--border); }
 
+/* --- Notice --- */
+.notice {
+  margin: 0 0 16px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #121a2d, #0e1422);
+  position: relative;
+  overflow: hidden;
+  color: var(--text);
+}
+.notice::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 14px;
+  background: radial-gradient(600px 140px at -10% -20%, rgba(91,140,255,.12), transparent 40%),
+              radial-gradient(600px 140px at 120% -20%, rgba(255,255,255,.06), transparent 40%);
+  pointer-events: none;
+}
+.notice::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #5b8cff, #2b3e70);
+}
+.notice-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.notice-icon { filter: drop-shadow(0 2px 6px rgba(91,140,255,.3)); }
+.notice-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid #2a3a66; background: #1a2440; color: var(--text); font-size: 12px; }
+.notice-title { margin: 4px 0 2px; font-weight: 700; letter-spacing: .2px; }
+.notice-text { margin: 0; color: var(--muted); }
+
 /* Profile photo under Hero */
 .profile-photo-wrapper {
   display: flex;
