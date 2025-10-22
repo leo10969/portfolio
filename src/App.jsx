@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 
 function Section({ id, title, children }) {
   return (
-    <section>
+    <section className="reveal">
       <h2 id={id}>{title}</h2>
       {children}
     </section>
@@ -86,11 +86,11 @@ function ProfileSection() {
           </dl>
           <dl className="profile-history">
             <dt>略歴</dt>
-            <dd><span className="history-year">2017年(平成29年)</span><br/> 大分高等学校 入学</dd>
-            <dd><span className="history-year">2020年(令和2年)</span><br/> 大分高等学校 卒業</dd>
-            <dd><span className="history-year">2020年(令和2年)</span><br/> 筑波大学 情報学群 情報科学類 入学</dd>
-            <dd><span className="history-year">2024年(令和6年)</span><br/> 筑波大学 情報学群 情報科学類 卒業</dd>
-            <dd><span className="history-year">2024年(令和6年)</span><br/> 筑波大学大学院 理工情報生命学術院 システム情報工学研究群 情報理工学位プログラム 入学</dd>
+            <dd><span className="history-year">2017年（平成29年）</span><br/> 大分高等学校 入学</dd>
+            <dd><span className="history-year">2020年（令和2年）</span><br/> 大分高等学校 卒業</dd>
+            <dd><span className="history-year">2020年（令和2年）</span><br/> 筑波大学 情報学群 情報科学類 入学</dd>
+            <dd><span className="history-year">2024年（令和6年）</span><br/> 筑波大学 情報学群 情報科学類 卒業</dd>
+            <dd><span className="history-year">2024年（令和6年）</span><br/> 筑波大学大学院 理工情報生命学術院 システム情報工学研究群 情報理工学位プログラム 入学</dd>
           </dl>
         </div>
       </div>
@@ -562,11 +562,15 @@ function App() {
           />
 
           {activeTab === 'pubs' && (
-            <PublicationsSection />
+            <div className="view view-fade-up">
+              <PublicationsSection />
+            </div>
           )}
 
           {activeTab === 'activities' && (
-            <ActivitiesSection />
+            <div className="view view-fade-up">
+              <ActivitiesSection />
+            </div>
           )}
 
           {false}

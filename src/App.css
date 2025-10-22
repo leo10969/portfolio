@@ -349,3 +349,66 @@ section#profile > h2 {
 .profile-history dd { position: relative; padding-left: 8px; margin: 8px 0; }
 .profile-history dd::before { content: ""; position: absolute; left: -12px; top: 10px; width: 8px; height: 8px; border-radius: 999px; background: #5b8cff; box-shadow: 0 0 0 3px rgba(91,140,255,.18); }
 .profile-history::before { content: ""; position: absolute; left: -8px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, #2b3e70, transparent); border-radius: 2px; }
+
+/* --- Animations: base --- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px) scale(.99); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes heroFloat {
+  from { transform: translate3d(-2%, 0, 0); }
+  to { transform: translate3d(2%, 2%, 0); }
+}
+
+@keyframes photoFloat {
+  from { transform: translateY(0); }
+  to { transform: translateY(4px); }
+}
+
+.reveal {
+  animation: fadeUp .55s ease both;
+}
+
+.view { will-change: opacity, transform; }
+.view-fade { animation: fadeIn .35s ease both; }
+.view-fade-up { animation: fadeUp .45s ease both; }
+
+/* Subtle ambient motion for hero */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(50% 40% at 50% -10%, rgba(91,140,255,.12), transparent 60%);
+  pointer-events: none;
+  animation: heroFloat 14s ease-in-out infinite alternate;
+}
+
+/* Gentle float for the profile image */
+.profile-photo { animation: photoFloat 12s ease-in-out infinite alternate; }
+
+/* List/card/timeline items appear with a lift */
+.cards .card,
+.activity-card,
+.timeline .tl-item {
+  animation: fadeUp .45s ease both;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .view-fade,
+  .view-fade-up,
+  .cards .card,
+  .activity-card,
+  .timeline .tl-item,
+  .profile-photo,
+  .hero::after {
+    animation: none !important;
+  }
+}
