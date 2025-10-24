@@ -359,6 +359,13 @@ function formatTimelineDate(label) {
   return label
 }
 
+// publications内でピリオド直後で改行されないように、
+// ". " を ".\u00A0"（ノーブレークスペース）に置換する
+function noBreakAfterPeriod(text) {
+  if (text == null) return ''
+  return String(text).replace(/\.\s+/g, '.\u00A0')
+}
+
 function PublicationsSection() {
   const [query, setQuery] = useState('')
   const [selectedCategories, setSelectedCategories] = useState([])
@@ -438,9 +445,9 @@ function PublicationsSection() {
               <span className="tag">{p.category}</span>
               <span className="year">{p.year}</span>
             </div>
-            <h3 className="title">{p.title}</h3>
-            <p className="authors">{p.authors}</p>
-            <p className="venue">{p.venue}</p>
+            <h3 className="title">{noBreakAfterPeriod(p.title)}</h3>
+            <p className="authors">{noBreakAfterPeriod(p.authors)}</p>
+            <p className="venue">{noBreakAfterPeriod(p.venue)}</p>
             <div className="actions">
               {p.pdfUrl ? (
                 <a className="btn" href={p.pdfUrl} target="_blank" rel="noreferrer">
@@ -448,6 +455,11 @@ function PublicationsSection() {
                 </a>
               ) : (
                 <span className="muted">PDF準備中</span>
+              )}
+              {p.doi && (
+                <a className="btn" href={p.doi} target="_blank" rel="noreferrer">
+                  <img className="pdf_icon" src={`${import.meta.env.BASE_URL}img/DOI_icon.svg`} />DOI
+                </a>
               )}
             </div>
           </article>
@@ -492,18 +504,20 @@ const publications = [
     id: 'ahs-2025',
     category: '国際会議(査読あり)',
     year: 2025,
-    authors: 'Reo Sato，Taisei Yamaguchi，Tadatsugu Shibahara, Kirk Honda, Myungguen Choi, Buntarou Shizuki',
-    title: 'GazeScope: Gaze Target Selection with a Magnifier in VR Environments',
-    venue: "The Augmented Humans International Conference (AHs '25), March 2025, pp. 1-12.",
+    authors: 'Reo Sato，Taisei Yamaguchi，Tadatsugu Shibahara, Kirk Honda, Myungguen Choi, Buntarou Shizuki.',
+    title: 'GazeScope: Gaze Target Selection with a Magnifier in VR Environments.',
+    venue: "In Proceedings of the Augmented Humans International Conference 2025, March 16-20, 2025, pp. 65 - 78.",
     pdfUrl: 'https://www.iplab.cs.tsukuba.ac.jp/~rsato/paper/ahs25-30.pdf',
+    doi: 'https://dl.acm.org/doi/10.1145/3745900.3746095',
+    
   },
   {
     id: 'sui-2025',
     category: '国際会議(査読あり)',
     year: 2025,
-    authors: 'Reo Sato，Myungguen Choi, Buntarou Shizuki',
-    title: 'Handheld AR Target Selection Method using a Smartphone’s Front Camera for Targets Behind the User',
-    venue: "ACM Symposium on Spatial User Interaction (SUI '25) (to appear), November 2025, pp. 1-10.",
+    authors: 'Reo Sato，Myungguen Choi, Buntarou Shizuki.',
+    title: 'Handheld AR Target Selection Method using a Smartphone’s Front Camera for Targets Behind the User.',
+    venue: "In Proceedings of ACM Symposium on Spatial User Interaction (SUI ’25), November 10–11, 2025, Montreal, QC, Canada. Association for Computing Machinery, 13 pages. (To appear).",
     pdfUrl: '',
   },
   {
