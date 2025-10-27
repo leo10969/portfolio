@@ -518,7 +518,8 @@ const publications = [
     authors: 'Reo Sato，Myungguen Choi, Buntarou Shizuki.',
     title: 'Handheld AR Target Selection Method using a Smartphone’s Front Camera for Targets Behind the User.',
     venue: "In Proceedings of ACM Symposium on Spatial User Interaction (SUI ’25), November 10–11, 2025, Montreal, QC, Canada. Association for Computing Machinery, 13 pages. (To appear).",
-    pdfUrl: '',
+    pdfUrl: 'https://www.iplab.cs.tsukuba.ac.jp/~rsato/paper/sui25-19-from-taps.pdf',
+    doi: 'https://dl.acm.org/doi/10.1145/3694907.3765930',
   },
   {
     id: 'interaction-2025',
