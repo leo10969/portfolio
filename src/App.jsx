@@ -2,9 +2,11 @@ import './App.css'
 import { useMemo, useState } from 'react'
 
 function Section({ id, title, children }) {
+  const emojiMap = { profile: '👤', 'paper-info': '📚', activities: '🏃‍♂️‍➡️' }
+  const emoji = emojiMap[id] || ''
   return (
-    <section className="reveal">
-      <h2 id={id}>{title}</h2>
+    <section className="reveal" id={id}>
+      <h2><span className="title-emoji" aria-hidden="true">{emoji}</span>{title}</h2>
       {children}
     </section>
   )
@@ -14,8 +16,8 @@ function Hero() {
   return (
     <div className="hero">
       <div className="hero-inner">
-        <h1 className="hero-title">佐藤玲生 Reo Sato</h1>
-        <p className="hero-sub">HCI</p>
+        <h1 className="hero-title"><span className="title-emoji" aria-hidden="true">👋</span>Reo Sato 佐藤玲生</h1>
+        {/* <p className="hero-sub">HCI <span aria-hidden="true"></span></p> */}
         {/* <div className="hero-cta">
           <a href="#paper-info" className="btn">文献を見る</a>
           <a href="#activities" className="btn ghost">活動を見る</a>
@@ -25,16 +27,16 @@ function Hero() {
   )
 }
 
-function TopNotice() {
+function FooterNotice() {
   return (
-    <div className="notice">
+    <footer className="notice">
       <div className="notice-head">
         <span className="notice-icon" aria-hidden="true">🚧</span>
         <span className="notice-badge">お知らせ</span>
       </div>
-      <p className="notice-title">Cursorエディタによって開発中</p>
+      <p className="notice-title">🛠️ Cursorエディタによって開発中</p>
       <p className="notice-text">ページの見た目以上に内容を充実させていきたい．．．</p>
-    </div>
+    </footer>
   )
 }
 
@@ -517,7 +519,7 @@ const publications = [
     year: 2025,
     authors: 'Reo Sato，Myungguen Choi, Buntarou Shizuki.',
     title: 'Handheld AR Target Selection Method using a Smartphone’s Front Camera for Targets Behind the User.',
-    venue: "In Proceedings of ACM Symposium on Spatial User Interaction (SUI ’25), November 10–11, 2025, Montreal, QC, Canada. Association for Computing Machinery, 13 pages. (To appear).",
+    venue: "In Proceedings of ACM Symposium on Spatial User Interaction (SUI ’25), November 10–11, 2025, Montreal, QC, Canada. Association for Computing Machinery, 13 pages.",
     pdfUrl: 'https://www.iplab.cs.tsukuba.ac.jp/~rsato/paper/sui25-19-from-taps.pdf',
     doi: 'https://dl.acm.org/doi/10.1145/3694907.3765930',
   },
@@ -561,7 +563,6 @@ function App() {
   }
   return (
     <div className="contents-wrapper">
-      <TopNotice />
       <Hero />
       <ProfilePhoto />
       <div className="single-column">
@@ -569,8 +570,8 @@ function App() {
         <div className="right-contents" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <TabNav
             tabs={[
-              { key: 'pubs', label: '文献' },
-              { key: 'activities', label: '活動' },
+              { key: 'pubs', label: '📚 文献' },
+              { key: 'activities', label: '🏃‍♂️‍➡️ 活動' },
             ]}
             active={activeTab}
             onChange={setActiveTab}
@@ -591,6 +592,7 @@ function App() {
           {false}
         </div>
       </div>
+      <FooterNotice />
     </div>
   )
 }
